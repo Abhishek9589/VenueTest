@@ -14,6 +14,12 @@ import { initializeDatabase } from "./config/database.js";
 
 dotenv.config();
 
+const allowed = ['http://13.201.223.137','http://localhost:5173']; // set here
+app.use(cors({
+  origin: (origin, cb) => (!origin || allowed.includes(origin)) ? cb(null, true) : cb(new Error('Not allowed by CORS')),
+  credentials: true
+}));
+
 export function createServer() {
   const app = express();
 
@@ -61,7 +67,7 @@ export function createServer() {
 
   // API routes
   app.get("/api/ping", (_req, res) => {
-    res.json({ message: "Hello from Express server v2!" });
+    res.json({ message: "Hello from Express server VenueKart" });
   });
 
   app.get("/api/demo", handleDemo);
