@@ -14,12 +14,6 @@ import { initializeDatabase } from "./config/database.js";
 
 dotenv.config();
 
-const allowed = ['http://13.201.223.137','http://localhost:5173']; // set here
-app.use(cors({
-  origin: (origin, cb) => (!origin || allowed.includes(origin)) ? cb(null, true) : cb(new Error('Not allowed by CORS')),
-  credentials: true
-}));
-
 export function createServer() {
   const app = express();
 
