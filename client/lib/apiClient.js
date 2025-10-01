@@ -11,9 +11,12 @@ class ApiClient {
   resolveUrl(url) {
     if (!url) return url;
     if (/^https?:\/\//i.test(url)) return url;
-    // Always use same-origin for API routes so dev proxy and prod SPA work without hardcoding
-    if (url.startsWith('/api')) return url;
     const base = this.baseURL || '';
+    // If a backend base URL is configured, route /api calls through it (for prod cross-domain like Vercel -> Render/AWS);
+    // otherwise, keep same-origin so Vite dev proxy works.
+    if (url.startsWith('/api')) {
+      return base ? `${base}${url}` : url;
+    }
     if (!base) return url;
     if (url.startsWith('/')) return `${base}${url}`;
     return `${base}/${url}`;
