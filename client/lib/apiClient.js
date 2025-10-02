@@ -2,8 +2,12 @@ import { getUserFriendlyError } from './errorMessages.js';
 
 class ApiClient {
   constructor() {
-    const envBase = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_BACKEND_URL) ? import.meta.env.VITE_BACKEND_URL : '';
-    this.baseURL = (envBase || '').replace(/\/+$/, '');
+    const env = (typeof import.meta !== 'undefined' && import.meta.env) ? import.meta.env : null;
+    const rawBase = env && env.VITE_BACKEND_URL ? env.VITE_BACKEND_URL : '';
+    const isLocalHostBase = /^https?:\/\/(localhost|127\.0\.0\.1)/i.test(rawBase || '');
+    // Only use explicit backend base in production, or when it's not pointing to localhost
+    const useBase = !!rawBase && ((env && env.PROD) || !isLocalHostBase);
+    this.baseURL = useBase ? rawBase.replace(/\/+$/, '') : '';
     this.isRefreshing = false;
     this.failedQueue = [];
   }
